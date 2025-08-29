@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 class PublishedManager(models.Manager):
     #менеджер для работы с опубликованными постами
@@ -24,8 +25,9 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=2, choices=Status.choices, default=Status.DRAFT)
 
-    objects = models.Manager()
-    published = PublishedManager()
+    objects = models.Manager()  #стандартный менеджер
+    published = PublishedManager()  #менеджер для работы с опубликованными постами
+    tags = TaggableManager()    #менеджер для работы с тегами
 
     class Meta:
         ordering = ['-publish']
