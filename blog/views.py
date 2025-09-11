@@ -2,16 +2,18 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 from .models import Post
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, SearchForm
 from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.http import require_POST
 from taggit.models import Tag
 from django.db.models import Count
+from django.contrib.postgres.search import  TrigramSimilarity
 
 
 
 def post_share(request, post_id):
+    """Представление обеспечивает функцию рекомендации постов по электронной почте"""
     post = get_object_or_404(Post,
                              id=post_id,
                              status=Post.Status.PUBLISHED)
@@ -39,6 +41,7 @@ def post_share(request, post_id):
 
 
 def post_list(request, tag_slug=None):
+    """представление выводит список постов, разделённой пагинацией"""
     post_list = Post.published.all()
 
     tag = None
@@ -62,6 +65,7 @@ def post_list(request, tag_slug=None):
 
 
 def post_detail(request, year, month, day, post):
+    """представление страницы конкретного поста"""
     post = get_object_or_404(Post,
                              status=Post.Status.PUBLISHED,
                              slug=post,
@@ -98,6 +102,7 @@ class PostListView(ListView):
 
 @require_POST
 def post_comment(request, post_id):
+    """представление, обеспечивающее систему комментариев"""
     post = get_object_or_404(Post,
                              id=post_id,
                              status=Post.Status.PUBLISHED)
@@ -111,4 +116,25 @@ def post_comment(request, post_id):
                   {'post': post,
                    'form': form,
                    'comment': comment})
+
+
+def post_search(request):
+    """Представление для обеспечения функции поиска"""
+    form = SearchForm()
+    query = None
+    results = []
+
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            results = Post.published.annotate(
+                similarity=TrigramSimilarity('title', query)
+            ).filter(similarity__gt=0.1).order_by('-similarity')
+
+    return render(request,
+                  'blog/post/search.html',
+                  {'form': form,
+                   'query': query,
+                   'results': results})
 
