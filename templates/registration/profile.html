@@ -29,6 +29,12 @@
           {{ user_form.email }}
         </div>
         <hr>
+        <div><a href="{% url 'password_change' %}">Change Password</a>
+        <hr>
+          <label>Change Avatar:</label>
+          {{ profile_form.avatar }}
+        </div>
+        <hr>
         <label>Bio:</label>
         {{ profile_form.bio }}
       </div>

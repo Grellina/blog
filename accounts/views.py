@@ -3,8 +3,9 @@ from .forms import SignUpForm, LoginForm, UpdateUserForm, UpdateProfileForm
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib import messages
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 class SignUpView(generic.CreateView):
@@ -63,3 +64,7 @@ def profile(request):
         return render(request, 'registration/profile.html', {'user_form': user_form, 'profile_form': profile_form})
 
 
+class ChangePasswordView(PasswordChangeView, SuccessMessageMixin):
+    template_name = 'registration/change_password.html'
+    success_message = 'Successfully Changed Your Password'
+    success_url = reverse_lazy('users-profile')
