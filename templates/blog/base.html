@@ -13,17 +13,18 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 <!-- Responsive navbar -->
-<nav class="navbar-brand-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="/">My First Blog</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="label=Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 {% if user.is_authenticated %}
                     <li class="nav_item">
-                        <a class="nav-link" href="{% url 'users-profile' %}"><img class="rounded-circle" width="30" src="{{ user.profile.avatar.url }}"/> {{ user.username }} </a></li>
+                        <a class="nav-link" href="{% url 'users-profile' %}">
+                        <img alt="avatar" class="rounded-circle" width="30" src="{{ user.profile.avatar.url }}"/> {{ user.username }} </a></li>
                     <li class="nav-item">
-                        <form action="{% url 'logout' %}}" method="post">{% csrf_token %}
+                        <form action="{% url 'logout' %}" method="post">{% csrf_token %}
                     <a href="#" class="nav-link" onclick="parentNode.submit();">Log Out</a>
                         </form>
                     </li>

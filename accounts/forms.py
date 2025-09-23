@@ -22,11 +22,16 @@ class SignUpForm(UserCreationForm):
 class LoginForm(AuthenticationForm):
     username = forms.CharField(max_length=100,
                                required=True,
-                               widget=forms.TextInput(attrs={'placeholder': 'Username'}))
+                               widget=forms.TextInput(attrs={'placeholder': 'Username',
+                                                             'class': "form-control mb-1"}))
     password = forms.CharField(max_length=50,
                                required=True,
-                               widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+                               widget=forms.PasswordInput(attrs={'placeholder': 'Password',
+                                                                 'class': "form-control mb-1"}))
     remember_me = forms.BooleanField(required=False)
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'remember_me']
 
 
 class UpdateUserForm(forms.ModelForm):
